@@ -1,0 +1,32 @@
+@import '../../node_modules/react-nice-dates/build/style.css';
+@import '~bootstrap/scss/bootstrap';
+
+body {
+  background-color: $dark;
+  color: $light;
+}
+
+.nice-dates-navigation {
+  color: $light;
+}
+
+.nice-dates-day {
+  color: $light;
+
+  &:before {
+    background-color: $gray-700;
+  }
+
+  &:after {
+    background-color: $gray-800;
+    border: none;
+  }
+
+  &.-selected:hover:after {
+    background-color: $gray-800;
+  }
+
+  &.-disabled {
+    color: $gray-700;
+  }
+}

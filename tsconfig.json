@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": ".",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./server/types"
+    ]
+  },
+  "include": [
+    "./index.ts"
+  ]
+}
