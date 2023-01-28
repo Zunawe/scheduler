@@ -1,4 +1,4 @@
-import React, { FC } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { Calendar } from 'react-nice-dates'
 import { isSameDay } from 'date-fns'
 import { enUS } from 'date-fns/locale'
@@ -10,6 +10,12 @@ interface MultiDatePickerProps {
 }
 
 export const MultiDatePicker: FC<MultiDatePickerProps> = ({ pickableDates, selectedDates, onDayClick }) => {
+  const [month, setMonth] = useState<Date>(new Date())
+
+  useEffect(() => {
+    setMonth(pickableDates === undefined || pickableDates.length === 0 ? new Date() : pickableDates.reduce((earliest, date) => earliest < date ? earliest : date, pickableDates[0]))
+  }, [pickableDates])
+
   const modifiers = {
     selected: (date: Date) => selectedDates.some((selectedDate) => isSameDay(selectedDate, date)),
     disabled: (date: Date) => pickableDates === undefined ? false : pickableDates.every((pickableDate) => !isSameDay(pickableDate, date))
@@ -21,12 +27,16 @@ export const MultiDatePicker: FC<MultiDatePickerProps> = ({ pickableDates, selec
     }
   }
 
+  // console.log(month)
+
   return (
     <Calendar
       onDayClick={handleDayClick}
       modifiers={modifiers}
       locale={enUS}
-      minimumDate={pickableDates === undefined ? undefined : pickableDates.reduce((earliest, date) => earliest < date ? earliest : date, pickableDates[0])}
+      month={month}
+      onMonthChange={(newMonth) => { if (newMonth !== null) setMonth(newMonth) }}
+      // minimumDate={pickableDates === undefined ? undefined : pickableDates.reduce((earliest, date) => earliest < date ? earliest : date, pickableDates[0])}
       // touchDragEnabled is missing in the type declarations
       // https://github.com/hernansartorio/react-nice-dates/pull/70
       // @ts-expect-error
