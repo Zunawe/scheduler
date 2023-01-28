@@ -22,7 +22,7 @@ export const Root: FC = () => {
     axios.put('/scheduler/api/create', selectedDates.map((date) => date.valueOf()))
       .then((response) => {
         if (response.status === 201) {
-          navigate(`/scheduler/event/${(response.data as string)}`)
+          navigate(`/event/${(response.data as string)}`)
         }
       })
       .catch((error) => console.log(error))

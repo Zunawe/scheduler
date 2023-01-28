@@ -14,6 +14,6 @@ export const TextInput: FC<TextInputProps> = ({ value, placeholder, invalid, onC
   }, [onChange])
 
   return (
-    <input className={`form-control ${invalid === undefined ? '' : 'is-invalid'}`} type='text' value={value} placeholder={placeholder} onChange={handleChange} />
+    <input className={`form-control ${invalid ?? false ? 'is-invalid' : ''}`} type='text' value={value} placeholder={placeholder} onChange={handleChange} />
   )
 }

@@ -33,7 +33,7 @@ export const eventParticipantPut: RequestHandler = async (req, res) => {
 }
 
 export const eventParticipantDelete: RequestHandler = async (req, res) => {
-  logger.info(`Deleting participant [${req.params.participantName}] from event [${req.params.eventId}]: ${JSON.stringify(req.body)}`)
+  logger.info(`Deleting participant [${req.params.participantName}] from event [${req.params.eventId}]`)
   await deleteEventParticipant(req.params.eventId, req.params.participantName)
   res.sendStatus(201)
 }

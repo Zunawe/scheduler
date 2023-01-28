@@ -16,6 +16,8 @@ const init = async (): Promise<void> => {
     throw new Error('NODE_ENV was not specified, please explicitly set NODE_ENV')
   }
 
+  logger.info(`Starting server in [${NODE_ENV}] mode`)
+
   const app = express()
 
   // Middlewares
@@ -56,7 +58,7 @@ const init = async (): Promise<void> => {
   const router = express.Router()
   router.use('/static', express.static(path.join(process.cwd(), 'dist', 'client')))
   router.use('/api', routes.api)
-  router.use('/', routes.root)
+  router.use('/*', routes.root)
 
   app.use(config.basePath, router)
 
