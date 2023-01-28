@@ -29,7 +29,7 @@ export const Root: FC = () => {
   }
 
   return (
-    <main className='container-fluid mt-2' style={{ maxWidth: '600px' }}>
+    <main className='container-fluid mt-2' style={{ maxWidth: '40rem' }}>
       <Text>Select dates to poll and click <strong>Create New</strong>. Then when you're redirected to the event page, share that URL.</Text>
       <MultiDatePicker selectedDates={selectedDates} onDayClick={handleDayClick} />
       <div className='d-grid'>

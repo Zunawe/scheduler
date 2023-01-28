@@ -42,7 +42,7 @@ export const Event: FC = () => {
   }
 
   return (
-    <main className='container-fluid mt-2' style={{ maxWidth: '600px' }}>
+    <main className='container-fluid mt-2' style={{ maxWidth: '40rem' }}>
       <Text>Enter your name and select all dates you are available. Make sure to check the next month or two. If you need to edit your response, just resubmit and make sure the names match.</Text>
       <TextInput invalid={submitClicked && participant === ''} value={participant} placeholder='Name' onChange={setParticipant} />
       {submitClicked && participant === '' ? <div className='invalid-feedback'>Please add your name.</div> : null}
