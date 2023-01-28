@@ -28,15 +28,49 @@ export const Summary: FC = () => {
     }
   }
 
+  const availableIntersection: number[] = state.eventData.options
+    .filter((option) => state.eventData.participants.every((participant) => participant.availableDates.some((date) => isSameDay(option, date))))
+
+  const availabilityData = state.eventData.options.map((date) => ({
+    date,
+    dateString: moment(new Date(date)).format('MMMM Do'),
+    participants: state.eventData.participants.filter(({ availableDates }) => availableDates.some((participantDate) => isSameDay(participantDate, date))).map(({ name }) => name)
+  }))
+
+  availabilityData.sort((a, b) => a.date - b.date)
+  availabilityData.sort((a, b) => (b.participants.length - a.participants.length) + (0.1 * Math.sign(a.date - b.date)))
+  availabilityData.forEach(({ participants }) => {
+    participants.sort((a, b) => a.charCodeAt(0) - b.charCodeAt(0))
+  })
+
   return (
     <div>
       <h5>Dates where everyone is available</h5>
       <ul>
         {
-          state.eventData.options
-            .filter((option) => state.eventData.participants.every((participant) => participant.availableDates.some((date) => isSameDay(option, date))))
-            .map((date) => moment(new Date(date)).format('MMMM Do'))
-            .map((dateString) => (<li key={dateString}>{dateString}</li>))
+          availableIntersection.length === 0
+            ? (<p>There are no dates where everyone is available</p>)
+            : availableIntersection
+              .map((date) => moment(new Date(date)).format('MMMM Do'))
+              .map((dateString) => (<li key={dateString}>{dateString}</li>))
+        }
+      </ul>
+      <hr />
+      <h5>Availability</h5>
+      <ul>
+        {
+          availabilityData.map(({ dateString, participants }) => {
+            return (
+              <li key={dateString}>
+                [{participants.length}] {dateString}
+                <ul>
+                  {
+                    participants.map((name) => (<li key={name}>{name}</li>))
+                  }
+                </ul>
+              </li>
+            )
+          })
         }
       </ul>
       <hr />
