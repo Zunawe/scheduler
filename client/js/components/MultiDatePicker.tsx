@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react'
 import { Calendar } from 'react-nice-dates'
-import { isSameDay } from 'date-fns'
-import { enUS } from 'date-fns/locale'
+import enUS from 'date-fns/locale/en-US'
+import moment from 'moment'
 
 interface MultiDatePickerProps {
   pickableDates?: Date[]
@@ -17,8 +17,8 @@ export const MultiDatePicker: FC<MultiDatePickerProps> = ({ pickableDates, selec
   }, [pickableDates])
 
   const modifiers = {
-    selected: (date: Date) => selectedDates.some((selectedDate) => isSameDay(selectedDate, date)),
-    disabled: (date: Date) => pickableDates === undefined ? false : pickableDates.every((pickableDate) => !isSameDay(pickableDate, date))
+    selected: (date: Date) => selectedDates.some((selectedDate) => moment(selectedDate).isSame(moment(date), 'day')),
+    disabled: (date: Date) => pickableDates === undefined ? false : pickableDates.every((pickableDate) => !moment(pickableDate).isSame(moment(date), 'day'))
   }
 
   const handleDayClick: (date: Date | null) => void = (date) => {

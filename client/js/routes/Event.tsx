@@ -1,7 +1,7 @@
 import React, { FC, useContext, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { isSameDay } from 'date-fns'
 import axios from 'axios'
+import moment from 'moment'
 
 import { pullEventData } from '../context/actions/app'
 import { Button, Text, TextInput, Summary, MultiDatePicker } from '../components'
@@ -17,7 +17,7 @@ export const Event: FC = () => {
   const { eventId } = useParams()
 
   const handleDayClick: (date: Date) => void = (date) => {
-    const dateIndex = selectedDates.findIndex((selectedDate) => isSameDay(selectedDate, date))
+    const dateIndex = selectedDates.findIndex((selectedDate) => moment(selectedDate).isSame(moment(date), 'day'))
     if (dateIndex === -1) {
       setSelectedDates([...selectedDates, date])
     } else {

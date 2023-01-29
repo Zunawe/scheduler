@@ -1,7 +1,6 @@
 import React, { useContext, FC, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
-import { isSameDay } from 'date-fns'
 
 import { Button } from '.'
 import { AppContext } from '../context/app'
@@ -29,12 +28,14 @@ export const Summary: FC = () => {
   }
 
   const availableIntersection: number[] = state.eventData.options
-    .filter((option) => Object.values(state.eventData.participants).every((availableDates) => availableDates.some((date) => isSameDay(option, date))))
+    .filter((option) => Object.values(state.eventData.participants).every((availableDates) => availableDates.some((date) => moment(option).isSame(moment(date)), 'day')))
 
   const availabilityData = state.eventData.options.map((date) => ({
     date,
     dateString: moment(new Date(date)).format('MMMM Do'),
-    participants: Object.entries(state.eventData.participants).filter(([name, availableDates]) => availableDates.some((participantDate) => isSameDay(participantDate, date))).map(([name]) => name)
+    participants: Object.entries(state.eventData.participants)
+      .filter(([name, availableDates]) => availableDates.some((participantDate) => moment(participantDate).isSame(moment(date), 'day')))
+      .map(([name]) => name)
   }))
 
   availabilityData.sort((a, b) => a.date - b.date)
