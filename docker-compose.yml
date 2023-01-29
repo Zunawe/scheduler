@@ -1,0 +1,26 @@
+services:
+  scheduler:
+    build:
+      context: .
+    container_name: scheduler
+    ports:
+      - 3002:8000
+    command: npm start
+    depends_on: 
+      - redis
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      DB_HOST: redis
+      DB_PORT: 6379
+
+  redis:
+    image: redis/redis-stack
+    container_name: scheduler_redis
+    volumes:
+      - scheduler_redis_data:/data
+    ports:
+      - 6379:6379
+
+volumes:
+  scheduler_redis_data:

@@ -29,12 +29,12 @@ export const Summary: FC = () => {
   }
 
   const availableIntersection: number[] = state.eventData.options
-    .filter((option) => state.eventData.participants.every((participant) => participant.availableDates.some((date) => isSameDay(option, date))))
+    .filter((option) => Object.values(state.eventData.participants).every((availableDates) => availableDates.some((date) => isSameDay(option, date))))
 
   const availabilityData = state.eventData.options.map((date) => ({
     date,
     dateString: moment(new Date(date)).format('MMMM Do'),
-    participants: state.eventData.participants.filter(({ availableDates }) => availableDates.some((participantDate) => isSameDay(participantDate, date))).map(({ name }) => name)
+    participants: Object.entries(state.eventData.participants).filter(([name, availableDates]) => availableDates.some((participantDate) => isSameDay(participantDate, date))).map(([name]) => name)
   }))
 
   availabilityData.sort((a, b) => a.date - b.date)
@@ -75,7 +75,7 @@ export const Summary: FC = () => {
       </ul>
       <hr />
       <h5>Participants</h5>
-      {state.eventData.participants.map(({ name, availableDates }, i) => (
+      {Object.entries(state.eventData.participants).map(([name, availableDates], i) => (
         <div key={name}>
           <div className='card text-bg-dark mb-3'>
             <div className='card-header'>

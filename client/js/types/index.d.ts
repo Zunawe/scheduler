@@ -6,13 +6,10 @@ declare abstract class Action {
 declare interface State {
   eventData: {
     options: number[]
-    participants: ParticipantData[]
+    participants: {
+      [name: string]: number[]
+    }
   }
-}
-
-declare interface ParticipantData {
-  name: string
-  availableDates: number[]
 }
 
 declare interface Store {

@@ -7,7 +7,7 @@ import { reducer } from './reducers/app'
 const initialState: State = {
   eventData: {
     options: [],
-    participants: []
+    participants: {}
   }
 }
 

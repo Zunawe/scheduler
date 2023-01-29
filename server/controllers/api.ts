@@ -2,24 +2,16 @@
 import { RequestHandler } from 'express'
 
 import { logger } from '../util'
-import { createEvent, getEvent, updateEventParticipant, deleteEventParticipant } from '../services/dbService'
-
-const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+import * as redisService from '../services/redisService'
 
 export const createPut: RequestHandler = async (req, res) => {
-  // Need to make sure this doesn't collide
-  const eventId = (new Array(5))
-    .fill(null)
-    .map(() => Math.floor(Math.random() * ALPHABET.length))
-    .map((i) => ALPHABET.charAt(i))
-    .join('')
-  logger.info(`Creating new event [${eventId}]`)
-  await createEvent(eventId, req.body)
+  const eventId = await redisService.generateUniqueEventId()
+  await redisService.createEvent(eventId, req.body)
   res.status(201).send(eventId)
 }
 
 export const eventGet: RequestHandler = async (req, res) => {
-  const eventData = await getEvent(req.params.eventId)
+  const eventData = await redisService.getEvent(req.params.eventId)
   if (eventData === undefined) {
     res.sendStatus(404)
   }
@@ -27,13 +19,13 @@ export const eventGet: RequestHandler = async (req, res) => {
 }
 
 export const eventParticipantPut: RequestHandler = async (req, res) => {
-  logger.info(`Received participant data for event [${req.params.eventId}]: ${JSON.stringify(req.body)}`)
-  await updateEventParticipant(req.params.eventId, req.body)
+  logger.debug(`Received participant data for event [${req.params.eventId}]: ${JSON.stringify(req.body)}`)
+  await redisService.updateEventParticipant(req.params.eventId, req.body.name, req.body.availableDates)
   res.sendStatus(201)
 }
 
 export const eventParticipantDelete: RequestHandler = async (req, res) => {
-  logger.info(`Deleting participant [${req.params.participantName}] from event [${req.params.eventId}]`)
-  await deleteEventParticipant(req.params.eventId, req.params.participantName)
+  logger.debug(`Deleting participant [${req.params.participantName}] from event [${req.params.eventId}]`)
+  await redisService.deleteEventParticipant(req.params.eventId, req.params.participantName)
   res.sendStatus(201)
 }

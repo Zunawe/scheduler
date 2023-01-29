@@ -5,6 +5,7 @@ import helmet from 'helmet'
 
 import { httpLogger, errorLogger } from './middleware'
 import { logger } from './util'
+import * as redisService from './services/redisService'
 import * as routes from './routes'
 import config from '../config/config.json'
 
@@ -65,8 +66,29 @@ const init = async (): Promise<void> => {
   app.use(errorLogger)
 
   // Starting the server
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     logger.info(`Server running on port ${PORT}`)
+  })
+
+  // Database connect
+  redisService.connect()
+    .then(() => {
+      logger.info(`Connected to database at ${process.env.DB_HOST as string}:${process.env.DB_PORT as string}`)
+    })
+    .catch((error) => { throw error })
+
+  // Cleanup
+  process.on('SIGTERM', () => {
+    logger.info('Received SIGTERM')
+    logger.info('Waiting for open connections to close...')
+    server.close(() => {
+      logger.info('Server closed')
+      redisService.disconnect()
+        .then(() => {
+          process.exit()
+        })
+        .catch((error) => { throw error })
+    })
   })
 }
 
