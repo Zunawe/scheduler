@@ -21,6 +21,7 @@ services:
       - scheduler_redis_data:/data
     ports:
       - 6379:6379
+      - 8001:8001
 
 volumes:
   scheduler_redis_data:
