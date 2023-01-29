@@ -12,10 +12,11 @@ export const createPut: RequestHandler = async (req, res) => {
 
 export const eventGet: RequestHandler = async (req, res) => {
   const eventData = await redisService.getEvent(req.params.eventId)
-  if (eventData === undefined) {
+  if (eventData === null) {
     res.sendStatus(404)
+  } else {
+    res.send(eventData)
   }
-  res.send(eventData)
 }
 
 export const eventParticipantPut: RequestHandler = async (req, res) => {

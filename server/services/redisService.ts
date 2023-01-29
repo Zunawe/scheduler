@@ -58,17 +58,17 @@ export const createEvent: (eventId: string, options: number[]) => Promise<void> 
   logger.debug(`Created new event [${eventId}]: ${JSON.stringify(event)}`)
 }
 
-export const getEvent: (eventId: string) => Promise<CalendarEvent | undefined> = async (eventId) => {
+export const getEvent: (eventId: string) => Promise<CalendarEvent | null> = async (eventId) => {
   const redis = getClient()
   if (redis === null) {
     throw new Error('Cannot get event, not connected to database')
   }
 
-  const event: CalendarEvent = JSON.parse((await redis.call('JSON.GET', eventId, '$')) as string)[0]
+  const results: any[] | null = JSON.parse((await redis.call('JSON.GET', eventId, '$')) as string)
 
-  logger.debug(`Retrieved event from database: ${JSON.stringify(event)}`)
+  logger.debug(`Retrieved event from database: ${JSON.stringify(results)}`)
 
-  return event
+  return results === null ? null : results[0]
 }
 
 export const updateEventParticipant: (eventId: string, participantName: string, availableDates: number[]) => Promise<void> = async (eventId, participantName, availableDates) => {
