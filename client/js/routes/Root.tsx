@@ -33,7 +33,7 @@ export const Root: FC = () => {
       <Text>Select dates to poll and click <strong>Create New</strong>. Then when you're redirected to the event page, share that URL.</Text>
       <MultiDatePicker selectedDates={selectedDates} onDayClick={handleDayClick} />
       <div className='d-grid'>
-        <Button onClick={handleSubmitClick}>Create New</Button>
+        <Button disabled={selectedDates.length === 0} onClick={handleSubmitClick}>Create New</Button>
       </div>
     </main>
   )

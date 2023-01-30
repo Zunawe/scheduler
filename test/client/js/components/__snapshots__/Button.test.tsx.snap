@@ -2,7 +2,7 @@
 
 exports[`Button should render a default button with text 1`] = `
 <button
-  class="btn btn-primary btn-md"
+  class="btn  btn-primary btn-md"
   type="button"
 >
   Button
