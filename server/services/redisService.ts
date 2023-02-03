@@ -13,20 +13,20 @@ declare interface CalendarEvent {
 const getClient: () => Redis | null = (() => {
   let client: Redis | null = null
 
-  const DB_HOST = process.env.DB_HOST
-  if (DB_HOST === undefined) {
-    throw new Error('DB_HOST was not specified, can\'t connect to a database')
+  const REDIS_HOST = process.env.REDIS_HOST
+  if (REDIS_HOST === undefined) {
+    throw new Error('REDIS_HOST was not specified, can\'t connect to redis')
   }
 
-  if (process.env.DB_PORT === undefined) {
-    throw new Error('DB_PORT was not specified, can\'t connect to a database')
+  if (process.env.REDIS_PORT === undefined) {
+    throw new Error('REDIS_PORT was not specified, can\'t connect to redis')
   }
-  const DB_PORT = Number.parseInt(process.env.DB_PORT)
+  const REDIS_PORT = Number.parseInt(process.env.REDIS_PORT)
 
   return () => {
     if (client === null) {
       try {
-        client = new Redis(DB_PORT, DB_HOST)
+        client = new Redis(REDIS_PORT, REDIS_HOST)
       } catch (err) {
         logger.error('Could not connect to redis')
         logger.error((err as Error).stack)
@@ -43,13 +43,13 @@ export const connect: () => Promise<void> = async () => {
 
 export const disconnect: () => Promise<void> = async () => {
   await getClient()?.quit()
-  logger.info('Disconnected from database')
+  logger.info('Disconnected from redis')
 }
 
 export const createEvent: (eventId: string, options: number[]) => Promise<void> = async (eventId, options) => {
   const redis = getClient()
   if (redis === null) {
-    throw new Error('Cannot create event, not connected to database')
+    throw new Error('Cannot create event, not connected to redis')
   }
 
   const event: CalendarEvent = { dateCreated: Date.now().valueOf(), options, participants: {} }
@@ -61,12 +61,12 @@ export const createEvent: (eventId: string, options: number[]) => Promise<void> 
 export const getEvent: (eventId: string) => Promise<CalendarEvent | null> = async (eventId) => {
   const redis = getClient()
   if (redis === null) {
-    throw new Error('Cannot get event, not connected to database')
+    throw new Error('Cannot get event, not connected to redis')
   }
 
   const results: any[] | null = JSON.parse((await redis.call('JSON.GET', eventId, '$')) as string)
 
-  logger.debug(`Retrieved event from database: ${JSON.stringify(results)}`)
+  logger.debug(`Retrieved event from redis: ${JSON.stringify(results)}`)
 
   return results === null ? null : results[0]
 }
@@ -74,7 +74,7 @@ export const getEvent: (eventId: string) => Promise<CalendarEvent | null> = asyn
 export const updateEventParticipant: (eventId: string, participantName: string, availableDates: number[]) => Promise<void> = async (eventId, participantName, availableDates) => {
   const redis = getClient()
   if (redis === null) {
-    throw new Error('Cannot update event, not connected to database')
+    throw new Error('Cannot update event, not connected to redis')
   }
 
   await redis.call('JSON.SET', eventId, `$.participants.${participantName}`, JSON.stringify(availableDates))
@@ -83,7 +83,7 @@ export const updateEventParticipant: (eventId: string, participantName: string, 
 export const deleteEventParticipant: (eventId: string, participantName: string) => Promise<void> = async (eventId, participantName) => {
   const redis = getClient()
   if (redis === null) {
-    throw new Error('Cannot update event, not connected to database')
+    throw new Error('Cannot update event, not connected to redis')
   }
 
   await redis.call('JSON.DEL', eventId, `$.participants.${participantName}`)
@@ -94,7 +94,7 @@ const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 export const generateUniqueEventId: () => Promise<string> = async () => {
   const redis = getClient()
   if (redis === null) {
-    throw new Error('Cannot generate a unique event id, not connected to database')
+    throw new Error('Cannot generate a unique event id, not connected to redis')
   }
 
   let eventId

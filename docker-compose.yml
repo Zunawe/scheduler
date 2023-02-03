@@ -13,8 +13,8 @@ services:
     environment:
       NODE_ENV: production
       PORT: 8000
-      DB_HOST: redis
-      DB_PORT: 6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
 
   redis:
     image: redis/redis-stack

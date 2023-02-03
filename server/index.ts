@@ -70,10 +70,10 @@ const init = async (): Promise<void> => {
     logger.info(`Server running on port ${PORT}`)
   })
 
-  // Database connect
+  // Redis connect
   redisService.connect()
     .then(() => {
-      logger.info(`Connected to database at ${process.env.DB_HOST as string}:${process.env.DB_PORT as string}`)
+      logger.info(`Connected to redis at ${process.env.REDIS_HOST as string}:${process.env.REDIS_PORT as string}`)
     })
     .catch((error) => { throw error })
 
