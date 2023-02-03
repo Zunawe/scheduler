@@ -76,7 +76,7 @@
     "build:server": "tsc"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "engines": {
     "node": ">=18"
   }

@@ -1,8 +1,10 @@
+version: "3.8"
+
 services:
-  scheduler:
+  server:
     build:
       context: .
-    container_name: scheduler
+    container_name: scheduler_server
     ports:
       - 3002:8000
     command: npm start
@@ -18,10 +20,10 @@ services:
     image: redis/redis-stack
     container_name: scheduler_redis
     volumes:
-      - scheduler_redis_data:/data
+      - redis_data:/data
     ports:
       - 6379:6379
       - 8001:8001
 
 volumes:
-  scheduler_redis_data:
+  redis_data:
