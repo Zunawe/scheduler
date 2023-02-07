@@ -28,7 +28,7 @@ export const Summary: FC = () => {
   }
 
   const availableIntersection: number[] = state.eventData.options
-    .filter((option) => Object.values(state.eventData.participants).every((availableDates) => availableDates.some((date) => moment(option).isSame(moment(date)), 'day')))
+    .filter((option) => Object.values(state.eventData.participants).every((availableDates) => availableDates.some((date) => moment(option).isSame(moment(date), 'day'))))
 
   const availabilityData = state.eventData.options.map((date) => ({
     date,
