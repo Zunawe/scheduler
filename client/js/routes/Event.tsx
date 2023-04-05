@@ -6,6 +6,7 @@ import moment from 'moment'
 import { pullEventData } from '../context/actions/app'
 import { Button, Text, TextInput, Summary, MultiDatePicker } from '../components'
 import { AppContext } from '../context/app'
+import { localDateToUtc } from '../lib'
 
 export const Event: FC = () => {
   const [state, dispatch] = useContext(AppContext)
@@ -34,7 +35,7 @@ export const Event: FC = () => {
     if (eventId !== undefined) {
       axios.put(`/scheduler/api/event/${eventId}/participant`, {
         name: participant,
-        availableDates: selectedDates.map((d) => d.valueOf())
+        availableDates: selectedDates.map((d) => localDateToUtc(d.valueOf()))
       }).then(() => {
         dispatch(pullEventData(eventId))
       }).catch((error) => console.log(error))

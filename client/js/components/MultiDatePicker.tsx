@@ -27,8 +27,6 @@ export const MultiDatePicker: FC<MultiDatePickerProps> = ({ pickableDates, selec
     }
   }
 
-  // console.log(month)
-
   return (
     <Calendar
       onDayClick={handleDayClick}

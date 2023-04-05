@@ -4,6 +4,7 @@ import axios from 'axios'
 import moment from 'moment'
 
 import { Button, Text, MultiDatePicker } from '../components'
+import { localDateToUtc } from '../lib'
 
 export const Root: FC = () => {
   const navigate = useNavigate()
@@ -19,7 +20,7 @@ export const Root: FC = () => {
   }
 
   const handleSubmitClick: () => void = () => {
-    axios.put('/scheduler/api/create', selectedDates.map((date) => date.valueOf()))
+    axios.put('/scheduler/api/create', selectedDates.map((date) => localDateToUtc(date.valueOf())))
       .then((response) => {
         if (response.status === 201) {
           navigate(`/event/${(response.data as string)}`)
