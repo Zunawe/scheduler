@@ -77,7 +77,7 @@ export const updateEventParticipant: (eventId: string, participantName: string, 
     throw new Error('Cannot update event, not connected to redis')
   }
 
-  await redis.call('JSON.SET', eventId, `$.participants.${participantName}`, JSON.stringify(availableDates))
+  await redis.call('JSON.SET', eventId, `$.participants["${participantName}"]`, JSON.stringify(availableDates))
 }
 
 export const deleteEventParticipant: (eventId: string, participantName: string) => Promise<void> = async (eventId, participantName) => {
@@ -86,7 +86,7 @@ export const deleteEventParticipant: (eventId: string, participantName: string) 
     throw new Error('Cannot update event, not connected to redis')
   }
 
-  await redis.call('JSON.DEL', eventId, `$.participants.${participantName}`)
+  await redis.call('JSON.DEL', eventId, `$.participants["${participantName}"]`)
 }
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
