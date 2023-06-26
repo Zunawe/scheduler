@@ -5,6 +5,11 @@ import { logger } from '../util'
 import * as redisService from '../services/redisService'
 
 export const createPut: RequestHandler = async (req, res) => {
+  if (!Array.isArray(req.body) || !req.body.every((entry) => typeof entry === 'number')) {
+    res.sendStatus(400)
+    return
+  }
+
   const eventId = await redisService.generateUniqueEventId()
   await redisService.createEvent(eventId, req.body)
   res.status(201).send(eventId)

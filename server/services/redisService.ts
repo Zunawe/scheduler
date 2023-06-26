@@ -52,7 +52,11 @@ export const createEvent: (eventId: string, options: number[]) => Promise<void> 
     throw new Error('Cannot create event, not connected to redis')
   }
 
-  const event: CalendarEvent = { dateCreated: Date.now().valueOf(), options, participants: {} }
+  const event: CalendarEvent = {
+    dateCreated: Date.now().valueOf(),
+    options: options.filter((option, i) => options.indexOf(option) === i),
+    participants: {}
+  }
   await redis.call('JSON.SET', eventId, '$', JSON.stringify(event))
 
   logger.debug(`Created new event [${eventId}]: ${JSON.stringify(event)}`)
