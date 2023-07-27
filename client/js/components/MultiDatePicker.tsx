@@ -11,10 +11,19 @@ interface MultiDatePickerProps {
 
 export const MultiDatePicker: FC<MultiDatePickerProps> = ({ pickableDates, selectedDates, onDayClick }) => {
   const [month, setMonth] = useState<Date>(new Date())
+  const [didGetPickableDates, setDidGetPickableDates] = useState<boolean>(false)
 
   useEffect(() => {
-    setMonth(pickableDates === undefined || pickableDates.length === 0 ? new Date() : pickableDates.reduce((earliest, date) => earliest < date ? earliest : date, pickableDates[0]))
+    if (pickableDates !== undefined && pickableDates.length > 0) {
+      setDidGetPickableDates(true)
+    }
   }, [pickableDates])
+
+  useEffect(() => {
+    if (!didGetPickableDates) {
+      setMonth(pickableDates === undefined || pickableDates.length === 0 ? new Date() : pickableDates.reduce((earliest, date) => earliest < date ? earliest : date, pickableDates[0]))
+    }
+  }, [didGetPickableDates, pickableDates])
 
   const modifiers = {
     selected: (date: Date) => selectedDates.some((selectedDate) => moment(selectedDate).isSame(moment(date), 'day')),
@@ -28,17 +37,18 @@ export const MultiDatePicker: FC<MultiDatePickerProps> = ({ pickableDates, selec
   }
 
   return (
-    <Calendar
-      onDayClick={handleDayClick}
-      modifiers={modifiers}
-      locale={enUS}
-      month={month}
-      onMonthChange={(newMonth) => { if (newMonth !== null) setMonth(newMonth) }}
-      // minimumDate={pickableDates === undefined ? undefined : pickableDates.reduce((earliest, date) => earliest < date ? earliest : date, pickableDates[0])}
-      // touchDragEnabled is missing in the type declarations
-      // https://github.com/hernansartorio/react-nice-dates/pull/70
-      // @ts-expect-error
-      touchDragEnabled={false}
-    />
+    <div className='calendar-container'>
+      <Calendar
+        onDayClick={handleDayClick}
+        modifiers={modifiers}
+        locale={enUS}
+        month={month}
+        onMonthChange={(newMonth) => { if (newMonth !== null) setMonth(newMonth) }}
+        // touchDragEnabled is missing in the type declarations
+        // https://github.com/hernansartorio/react-nice-dates/pull/70
+        // @ts-expect-error
+        touchDragEnabled={false}
+      />
+    </div>
   )
 }
