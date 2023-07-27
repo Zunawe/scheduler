@@ -29,6 +29,7 @@ export const Summary: FC = () => {
 
   const availableIntersection: number[] = state.eventData.options
     .filter((option) => Object.values(state.eventData.participants).every((availableDates) => availableDates.some((date) => moment(option).isSame(moment(date), 'day'))))
+    .sort((a, b) => a - b)
 
   const availabilityData = state.eventData.options.map((date) => ({
     date,
@@ -38,7 +39,6 @@ export const Summary: FC = () => {
       .map(([name]) => name)
   }))
 
-  availabilityData.sort((a, b) => a.date - b.date)
   availabilityData.sort((a, b) => (b.participants.length - a.participants.length) + (0.1 * Math.sign(a.date - b.date)))
   availabilityData.forEach(({ participants }) => {
     participants.sort((a, b) => a.charCodeAt(0) - b.charCodeAt(0))
@@ -76,19 +76,22 @@ export const Summary: FC = () => {
       </ul>
       <hr />
       <h5>Participants</h5>
-      {Object.entries(state.eventData.participants).map(([name, availableDates], i) => (
-        <div key={name}>
-          <div className='card text-bg-dark mb-3'>
-            <div className='card-header'>
-              <span className='align-middle'>{name}</span>
-              <span className='float-end'><Button type='danger' size='sm' onClick={() => handleClickDelete(name)}>Delete</Button></span>
-            </div>
-            <div className='card-body'>
-              <ul>{availableDates.map((date) => moment(new Date(date)).format('MMMM Do')).map((dateString) => (<li key={dateString}>{dateString}</li>))}</ul>
+      {Object.entries(state.eventData.participants).map(([name, availableDates], i) => {
+        const sortedDates = availableDates.slice().sort((a, b) => a - b)
+        return (
+          <div key={name}>
+            <div className='card text-bg-dark mb-3'>
+              <div className='card-header'>
+                <span className='align-middle'>{name}</span>
+                <span className='float-end'><Button type='danger' size='sm' onClick={() => handleClickDelete(name)}>Delete</Button></span>
+              </div>
+              <div className='card-body'>
+                <ul>{sortedDates.map((date) => moment(new Date(date)).format('MMMM Do')).map((dateString) => (<li key={dateString}>{dateString}</li>))}</ul>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
