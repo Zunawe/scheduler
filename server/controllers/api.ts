@@ -10,13 +10,27 @@ export const createPut: RequestHandler = async (req, res) => {
     return
   }
 
-  const eventId = await redisService.generateUniqueEventId()
-  await redisService.createEvent(eventId, req.body)
+  let eventId
+  try {
+    eventId = await redisService.generateUniqueEventId()
+    await redisService.createEvent(eventId, req.body)
+  } catch (error: any) {
+    res.sendStatus(500)
+    return
+  }
+
   res.status(201).send(eventId)
 }
 
 export const eventGet: RequestHandler = async (req, res) => {
-  const eventData = await redisService.getEvent(req.params.eventId)
+  let eventData
+  try {
+    eventData = await redisService.getEvent(req.params.eventId)
+  } catch (error: any) {
+    res.sendStatus(500)
+    return
+  }
+
   if (eventData === null) {
     res.sendStatus(404)
   } else {
@@ -26,12 +40,26 @@ export const eventGet: RequestHandler = async (req, res) => {
 
 export const eventParticipantPut: RequestHandler = async (req, res) => {
   logger.debug(`Received participant data for event [${req.params.eventId}]: ${JSON.stringify(req.body)}`)
-  await redisService.updateEventParticipant(req.params.eventId, req.body.name, req.body.availableDates)
+
+  try {
+    await redisService.updateEventParticipant(req.params.eventId, req.body.name, req.body.availableDates)
+  } catch (error: any) {
+    res.sendStatus(500)
+    return
+  }
+
   res.sendStatus(201)
 }
 
 export const eventParticipantDelete: RequestHandler = async (req, res) => {
   logger.debug(`Deleting participant [${req.params.participantName}] from event [${req.params.eventId}]`)
-  await redisService.deleteEventParticipant(req.params.eventId, req.params.participantName)
+
+  try {
+    await redisService.deleteEventParticipant(req.params.eventId, req.params.participantName)
+  } catch (error: any) {
+    res.sendStatus(500)
+    return
+  }
+
   res.sendStatus(201)
 }
