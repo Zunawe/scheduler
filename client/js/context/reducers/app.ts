@@ -1,5 +1,6 @@
 import { SetEventDataAction } from '../actions/app'
 import { utcDateToLocal } from '../../lib'
+import { type Reducer } from '../types'
 
 export const reducer: Reducer = (state, action) => {
   if (action instanceof SetEventDataAction) {

@@ -3,6 +3,16 @@ import React, { FC, ReactNode, createContext } from 'react'
 import { useEnhancedReducer } from '../hooks'
 import { thunkMiddleware } from './middlewares'
 import { reducer } from './reducers/app'
+import { type Dispatch } from './types'
+
+export interface State {
+  eventData: {
+    options: number[]
+    participants: {
+      [name: string]: number[]
+    }
+  }
+}
 
 const initialState: State = {
   eventData: {
