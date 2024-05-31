@@ -46,6 +46,16 @@ export const Summary: FC = () => {
 
   return (
     <div>
+      <h5>All options</h5>
+      <ul>
+        {
+          state.eventData.options
+            .sort((a, b) => a - b)
+            .map((date) => moment(new Date(date)).format('MMMM Do'))
+            .map((dateString) => (<li key={dateString}>{dateString}</li>))
+        }
+      </ul>
+      <hr />
       <h5>Dates where everyone is available</h5>
       <ul>
         {
